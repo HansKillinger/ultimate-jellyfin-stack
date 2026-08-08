@@ -1,8 +1,6 @@
 networks:
   starr:
-  gluetun_network:
   jellystat:
-
 
 services:
 
@@ -56,9 +54,7 @@ services:
       - "7878:7878"
 
     networks:
-      starr:
-      gluetun_network:
-        ipv4_address: ${RADARR_IPV4:-}
+      - starr
 
     restart: unless-stopped
 
@@ -84,9 +80,7 @@ services:
       - "8989:8989"
 
     networks:
-      starr:
-      gluetun_network:
-        ipv4_address: ${SONARR_IPV4:-}
+      - starr
 
     restart: unless-stopped
 
@@ -320,6 +314,9 @@ services:
       - ${MOVIES_PATH}:/data/movies
       - ${TRANSCODE_PATH}:/temp
 
+    networks:
+      - starr
+
 
   # ============================================================
   # BAZARR
@@ -527,7 +524,6 @@ services:
 
     networks:
       - starr
-      - gluetun_network
 
     # If the VPN cannot connect:
     # command: update -enduser -providers ${VPN_SERVICE_PROVIDER:-mullvad}
@@ -735,4 +731,3 @@ services:
   #
   #   networks:
   #     - starr
-  
