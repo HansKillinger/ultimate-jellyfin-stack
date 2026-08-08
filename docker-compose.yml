@@ -1,18 +1,7 @@
 networks:
-  proxy:
-    external: true
-
-  jellyfin_default:
-    external: true
-
   starr:
-    external: true
-
-  jellystat:
-    external: true
-
   gluetun_network:
-    external: true
+  jellystat:
 
 
 services:
@@ -43,7 +32,6 @@ services:
     restart: unless-stopped
 
     networks:
-      - proxy
       - starr
 
 
@@ -68,7 +56,6 @@ services:
       - "7878:7878"
 
     networks:
-      proxy:
       starr:
       gluetun_network:
         ipv4_address: ${RADARR_IPV4:-}
@@ -97,7 +84,6 @@ services:
       - "8989:8989"
 
     networks:
-      proxy:
       starr:
       gluetun_network:
         ipv4_address: ${SONARR_IPV4:-}
@@ -126,7 +112,6 @@ services:
   #     - "8787:8787"
   #
   #   networks:
-  #     - proxy
   #     - starr
   #
   #   restart: unless-stopped
@@ -153,7 +138,6 @@ services:
   #     - "8686:8686"
   #
   #   networks:
-  #     - proxy
   #     - starr
   #
   #   restart: unless-stopped
@@ -241,7 +225,6 @@ services:
       - ${MOVIES_PATH}:/data/movies
 
     networks:
-      - proxy
       - starr
 
     ports:
@@ -337,9 +320,6 @@ services:
       - ${MOVIES_PATH}:/data/movies
       - ${TRANSCODE_PATH}:/temp
 
-    networks:
-      - proxy
-
 
   # ============================================================
   # BAZARR
@@ -407,7 +387,6 @@ services:
       - ${BASE_PATH}/wizarr/cache:/.cache
 
     networks:
-      - proxy
       - starr
 
     environment:
@@ -548,7 +527,6 @@ services:
 
     networks:
       - starr
-      - proxy
       - gluetun_network
 
     # If the VPN cannot connect:
@@ -589,7 +567,6 @@ services:
       - "7575:7575"
 
     networks:
-      - proxy
       - starr
 
 
@@ -656,7 +633,6 @@ services:
 
     networks:
       - starr
-      - proxy
 
 
   # ============================================================
@@ -709,7 +685,6 @@ services:
   #
   #   networks:
   #     - jellystat
-  #     - proxy
   #     - starr
 
 
