@@ -561,11 +561,11 @@ services:
       - starr
   
     healthcheck:
-      test: ["/gluetun-entrypoint", "healthcheck"]
-      interval: 5s
-      timeout: 5s
-      start_period: 10s
-      retries: 3
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://127.0.0.1:9999 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
 
   # ============================================================
   # HOMARR
