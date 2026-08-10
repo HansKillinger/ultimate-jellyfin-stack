@@ -172,6 +172,9 @@ services:
       - PUID=${PUID}
       - PGID=${PGID}
       - TZ=${TZ}
+    
+    ports:
+      - "9696:9696"
 
     volumes:
       - ${BASE_PATH}/prowlarr/config:/config
@@ -547,9 +550,6 @@ services:
   
       # qBittorrent WebUI
       - "8080:8080"
-  
-      # Prowlarr
-      - "9696:9696"
   
       # Bazarr
       - "6767:6767"
