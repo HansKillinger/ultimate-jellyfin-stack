@@ -352,7 +352,6 @@ services:
   bazarr:
     image: lscr.io/linuxserver/bazarr:latest
     container_name: bazarr
-    network_mode: "service:gluetun"
 
     environment:
       - PUID=${PUID}
@@ -363,6 +362,12 @@ services:
       - ${BASE_PATH}/bazarr/config:/config
       - ${TV_PATH}:/data/tv
       - ${MOVIES_PATH}:/data/movies
+
+    ports:
+      - "6767:6767"
+
+    networks:
+      - starr
 
     restart: unless-stopped
 
