@@ -254,33 +254,33 @@ services:
   #   restart: unless-stopped
 
 
-# ============================================================
-# QBITTORRENT
-# ============================================================
-
-qbittorrent:
-  image: lscr.io/linuxserver/qbittorrent:latest
-  container_name: qbittorrent
-  network_mode: "service:gluetun"
-
-  environment:
-    - PUID=${PUID}
-    - PGID=${PGID}
-    - TZ=${TZ}
-    - WEBUI_PORT=8080
-    - TORRENTING_PORT=${AIRVPN_PORT}
-    - UMASK=002
-
-  volumes:
-    - ${BASE_PATH}/qbittorrent/config:/config
-    - ${TV_PATH}:/data/tv
-    - ${MOVIES_PATH}:/data/movies
-
-  depends_on:
-    gluetun:
-      condition: service_healthy
-
-  restart: unless-stopped
+  # ============================================================
+  # QBITTORRENT
+  # ============================================================
+  
+  qbittorrent:
+    image: lscr.io/linuxserver/qbittorrent:latest
+    container_name: qbittorrent
+    network_mode: "service:gluetun"
+  
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - WEBUI_PORT=8080
+      - TORRENTING_PORT=${AIRVPN_PORT}
+      - UMASK=002
+  
+    volumes:
+      - ${BASE_PATH}/qbittorrent/config:/config
+      - ${TV_PATH}:/data/tv
+      - ${MOVIES_PATH}:/data/movies
+  
+    depends_on:
+      gluetun:
+        condition: service_healthy
+  
+    restart: unless-stopped
 
 
   # ============================================================
@@ -475,97 +475,97 @@ qbittorrent:
   #
   #   restart: unless-stopped
 
-# ============================================================
-# GLUETUN
-# ============================================================
-
-gluetun:
-  image: qmcgaw/gluetun:latest
-  container_name: gluetun
-
-  cap_add:
-    - NET_ADMIN
-
-  devices:
-    - /dev/net/tun:/dev/net/tun
-
-  restart: unless-stopped
-
-  environment:
-
-    # --------------------------------------------------------
-    # VPN
-    # --------------------------------------------------------
-
-    - VPN_SERVICE_PROVIDER=${VPN_SERVICE_PROVIDER}
-    - VPN_TYPE=${VPN_TYPE}
-
-    # AirVPN WireGuard configuration
-    - WIREGUARD_PRIVATE_KEY=${WIREGUARD_KEY}
-    - WIREGUARD_PRESHARED_KEY=${WIREGUARD_PRESHARED_KEY}
-    - WIREGUARD_ADDRESSES=${WIREGUARD_ADD}
-
-    # Optional server selection
-    - SERVER_COUNTRIES=${VPN_SERVER_COUNTRIES:-}
-
-    # --------------------------------------------------------
-    # WireGuard
-    # --------------------------------------------------------
-
-    - WIREGUARD_MTU=${WIREGUARD_MTU:-1200}
-
-    # --------------------------------------------------------
-    # AirVPN port forwarding
-    # --------------------------------------------------------
-
-    # Port obtained from AirVPN
-    - FIREWALL_VPN_INPUT_PORTS=${AIRVPN_PORT}
-
-    # --------------------------------------------------------
-    # LAN access
-    # --------------------------------------------------------
-
-    # qBittorrent WebUI
-    - FIREWALL_INPUT_PORTS=8080
-
-    # --------------------------------------------------------
-    # DNS
-    # --------------------------------------------------------
-
-    - DNS_UPSTREAM_RESOLVERS=${GLUETUN_DNS_UPSTREAM_RESOLVERS:-gluetun}
-
-    # --------------------------------------------------------
-    # Server database updater
-    # --------------------------------------------------------
-
-    - UPDATER_PERIOD=24h
-    - UPDATER_VPN_SERVICE_PROVIDERS=${VPN_SERVICE_PROVIDER}
-
-  ports:
-
-    # qBittorrent WebUI
-    - "8080:8080"
-
-    # Prowlarr
-    - "9696:9696"
-
-    # Bazarr
-    - "6767:6767"
-
-    # Your other services sharing Gluetun
-    - "7474:7474"
-    - "8191:8191"
-    - "9191:9191"
-
-  networks:
-    - starr
-
-  healthcheck:
-    test: ["/gluetun-entrypoint", "healthcheck"]
-    interval: 5s
-    timeout: 5s
-    start_period: 10s
-    retries: 3
+  # ============================================================
+  # GLUETUN
+  # ============================================================
+  
+  gluetun:
+    image: qmcgaw/gluetun:latest
+    container_name: gluetun
+  
+    cap_add:
+      - NET_ADMIN
+  
+    devices:
+      - /dev/net/tun:/dev/net/tun
+  
+    restart: unless-stopped
+  
+    environment:
+  
+      # --------------------------------------------------------
+      # VPN
+      # --------------------------------------------------------
+  
+      - VPN_SERVICE_PROVIDER=${VPN_SERVICE_PROVIDER}
+      - VPN_TYPE=${VPN_TYPE}
+  
+      # AirVPN WireGuard configuration
+      - WIREGUARD_PRIVATE_KEY=${WIREGUARD_KEY}
+      - WIREGUARD_PRESHARED_KEY=${WIREGUARD_PRESHARED_KEY}
+      - WIREGUARD_ADDRESSES=${WIREGUARD_ADD}
+  
+      # Optional server selection
+      - SERVER_COUNTRIES=${VPN_SERVER_COUNTRIES:-}
+  
+      # --------------------------------------------------------
+      # WireGuard
+      # --------------------------------------------------------
+  
+      - WIREGUARD_MTU=${WIREGUARD_MTU:-1200}
+  
+      # --------------------------------------------------------
+      # AirVPN port forwarding
+      # --------------------------------------------------------
+  
+      # Port obtained from AirVPN
+      - FIREWALL_VPN_INPUT_PORTS=${AIRVPN_PORT}
+  
+      # --------------------------------------------------------
+      # LAN access
+      # --------------------------------------------------------
+  
+      # qBittorrent WebUI
+      - FIREWALL_INPUT_PORTS=8080
+  
+      # --------------------------------------------------------
+      # DNS
+      # --------------------------------------------------------
+  
+      - DNS_UPSTREAM_RESOLVERS=${GLUETUN_DNS_UPSTREAM_RESOLVERS:-gluetun}
+  
+      # --------------------------------------------------------
+      # Server database updater
+      # --------------------------------------------------------
+  
+      - UPDATER_PERIOD=24h
+      - UPDATER_VPN_SERVICE_PROVIDERS=${VPN_SERVICE_PROVIDER}
+  
+    ports:
+  
+      # qBittorrent WebUI
+      - "8080:8080"
+  
+      # Prowlarr
+      - "9696:9696"
+  
+      # Bazarr
+      - "6767:6767"
+  
+      # Your other services sharing Gluetun
+      - "7474:7474"
+      - "8191:8191"
+      - "9191:9191"
+  
+    networks:
+      - starr
+  
+    healthcheck:
+      test: ["/gluetun-entrypoint", "healthcheck"]
+      interval: 5s
+      timeout: 5s
+      start_period: 10s
+      retries: 3
 
   # ============================================================
   # HOMARR
