@@ -1,5 +1,5 @@
 # Ports Cheat Sheet
-## Nextcloud + Caddy
+## Nextcloud -> Caddy
 - 80
 - 443
 
