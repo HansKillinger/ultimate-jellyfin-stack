@@ -1,4 +1,7 @@
 # Ports Cheat Sheet
+## Nextcloud + Caddy
+- 80
+-443
 
 ## Current - Installed
 - 5055   Seerr
