@@ -183,6 +183,21 @@ services:
 
     restart: unless-stopped
 
+  # ============================================================
+  # AUTOBRR
+  # ============================================================
+
+  byparr:
+    image: ghcr.io/thephaseless/byparr:latest
+    container_name: byparr
+    environment:
+      - TZ=${TZ}
+    volumes:
+      - ${BASE_PATH}/byparr:/config
+    shm_size: 512mb
+    networks:
+      - starr
+    restart: unless-stopped
 
   # ============================================================
   # AUTOBRR
