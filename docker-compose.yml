@@ -576,9 +576,6 @@ services:
       # qBittorrent WebUI
       - "8080:8080"
   
-      # Bazarr
-      - "6767:6767"
-  
       # Your other services sharing Gluetun
       - "7474:7474"
       - "8191:8191"
