@@ -49,6 +49,7 @@ services:
     volumes:
       - ${BASE_PATH}/radarr/config:/config
       - ${MOVIES_PATH}:/data/movies
+      - ${MOVIES_PATH}/downloads:/data/downloads
 
     ports:
       - "7878:7878"
@@ -75,6 +76,7 @@ services:
     volumes:
       - ${BASE_PATH}/sonarr/config:/config
       - ${TV_PATH}:/data/tv
+      - ${MOVIES_PATH}/downloads:/data/downloads
 
     ports:
       - "8989:8989"
@@ -295,6 +297,7 @@ services:
       - ${BASE_PATH}/qbittorrent/config:/config
       - ${TV_PATH}:/data/tv
       - ${MOVIES_PATH}:/data/movies
+      - ${MOVIES_PATH}/downloads:/data/downloads
   
     depends_on:
       gluetun:
