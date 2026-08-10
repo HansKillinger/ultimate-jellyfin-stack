@@ -540,6 +540,8 @@ services:
   
       - UPDATER_PERIOD=24h
       - UPDATER_VPN_SERVICE_PROVIDERS=${VPN_SERVICE_PROVIDER}
+
+      - DNS_BLOCK_MALICIOUS=false
   
     ports:
   
@@ -561,12 +563,11 @@ services:
       - starr
   
     healthcheck:
-      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://127.0.0.1:9999 || exit 1"]
+      test: ["CMD", "/gluetun-entrypoint", "healthcheck"]
       interval: 30s
       timeout: 10s
       retries: 5
-      start_period: 30s
-
+      start_period: 60s
   # ============================================================
   # HOMARR
   # ============================================================
