@@ -171,6 +171,9 @@ services:
       - PUID=${PUID}
       - PGID=${PGID}
       - TZ=${TZ}
+
+    networks:
+      - starr
     
     ports:
       - "9696:9696"
