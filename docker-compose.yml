@@ -254,29 +254,33 @@ services:
   #   restart: unless-stopped
 
 
-  # ============================================================
-  # QBITTORRENT
-  # ============================================================
+# ============================================================
+# QBITTORRENT
+# ============================================================
 
-  qbittorrent:
-    image: lscr.io/linuxserver/qbittorrent:libtorrentv1
-    container_name: qbittorrent
-    network_mode: "service:gluetun"
+qbittorrent:
+  image: lscr.io/linuxserver/qbittorrent:latest
+  container_name: qbittorrent
+  network_mode: "service:gluetun"
 
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TZ}
-      - WEBUI_PORT=8080
-      - TORRENTING_PORT=8694
-      - UMASK=002
+  environment:
+    - PUID=${PUID}
+    - PGID=${PGID}
+    - TZ=${TZ}
+    - WEBUI_PORT=8080
+    - TORRENTING_PORT=${AIRVPN_PORT}
+    - UMASK=002
 
-    volumes:
-      - ${BASE_PATH}/qbittorrent/config:/config
-      - ${TV_PATH}:/data/tv
-      - ${MOVIES_PATH}:/data/movies
+  volumes:
+    - ${BASE_PATH}/qbittorrent/config:/config
+    - ${TV_PATH}:/data/tv
+    - ${MOVIES_PATH}:/data/movies
 
-    restart: unless-stopped
+  depends_on:
+    gluetun:
+      condition: service_healthy
+
+  restart: unless-stopped
 
 
   # ============================================================
@@ -471,63 +475,97 @@ services:
   #
   #   restart: unless-stopped
 
+# ============================================================
+# GLUETUN
+# ============================================================
 
-  # ============================================================
-  # GLUETUN
-  # ============================================================
+gluetun:
+  image: qmcgaw/gluetun:latest
+  container_name: gluetun
 
-  gluetun:
-    image: qmcgaw/gluetun:v3
-    container_name: gluetun
+  cap_add:
+    - NET_ADMIN
 
-    cap_add:
-      - NET_ADMIN
+  devices:
+    - /dev/net/tun:/dev/net/tun
 
-    restart: unless-stopped
+  restart: unless-stopped
 
-    devices:
-      - /dev/net/tun:/dev/net/tun
+  environment:
 
-    environment:
-      - DNS_UPSTREAM_RESOLVERS=${GLUETUN_DNS_UPSTREAM_RESOLVERS:-gluetun}
-      - VPN_SERVICE_PROVIDER=${VPN_SERVICE_PROVIDER:-mullvad}
-      - VPN_TYPE=${VPN_TYPE:-wireguard}
-      - WIREGUARD_PRIVATE_KEY=${WIREGUARD_KEY}
-      - WIREGUARD_ADDRESSES=${WIREGUARD_ADD}
-      - SERVER_CITIES=${VPN_SERVER_CITIES}
-      - UPDATER_PERIOD=24h
-      - UPDATER_VPN_SERVICE_PROVIDERS=${VPN_SERVICE_PROVIDER:-mullvad}
-      - WIREGUARD_MTU=${WIREGUARD_MTU:-1200}
-      - PUBLICIP_API=${PUBLICIP_API}
-      - PUBLICIP_API_TOKEN=${PUBLICIP_TOKEN}
-      - VPN_PORT_FORWARDING=${VPN_PORT_FORWARDING}
+    # --------------------------------------------------------
+    # VPN
+    # --------------------------------------------------------
 
-      - VPN_PORT_FORWARDING_UP_COMMAND=/bin/sh -c 'wget -O- --retry-connrefused --post-data "json={\"listen_port\":{{PORT}},\"current_network_interface\":\"{{VPN_INTERFACE}}\",\"random_port\":false,\"upnp\":false}" http://127.0.0.1:8080/api/v2/app/setPreferences 2>&1'
+    - VPN_SERVICE_PROVIDER=${VPN_SERVICE_PROVIDER}
+    - VPN_TYPE=${VPN_TYPE}
 
-      - VPN_PORT_FORWARDING_DOWN_COMMAND=/bin/sh -c 'wget -O- --retry-connrefused --post-data "json={\"listen_port\":0,\"current_network_interface\":\"lo\"}" http://127.0.0.1:8080/api/v2/app/setPreferences 2>&1'
+    # AirVPN WireGuard configuration
+    - WIREGUARD_PRIVATE_KEY=${WIREGUARD_KEY}
+    - WIREGUARD_PRESHARED_KEY=${WIREGUARD_PRESHARED_KEY}
+    - WIREGUARD_ADDRESSES=${WIREGUARD_ADD}
 
-      - UPDATER_PROTONVPN_EMAIL=${UPDATER_PROTONVPN_EMAIL:-}
-      - UPDATER_PROTONVPN_PASSWORD=${UPDATER_PROTONVPN_PASSWORD:-}
-      - OPENVPN_USER=${OPENVPN_USER:-}
-      - OPENVPN_PASSWORD=${OPENVPN_PASSWORD:-}
+    # Optional server selection
+    - SERVER_COUNTRIES=${VPN_SERVER_COUNTRIES:-}
 
-    ports:
-      - "2468:2468/tcp"
-      - "8080:8080/tcp"
-      - "8694:8694/tcp"
-      - "5757:5757/tcp"
-      - "8191:8191/tcp"
-      - "9696:9696/tcp"
-      - "7474:7474/tcp"
-      - "9191:9191"
-      - "6767:6767"
+    # --------------------------------------------------------
+    # WireGuard
+    # --------------------------------------------------------
 
-    networks:
-      - starr
+    - WIREGUARD_MTU=${WIREGUARD_MTU:-1200}
 
-    # If the VPN cannot connect:
-    # command: update -enduser -providers ${VPN_SERVICE_PROVIDER:-mullvad}
+    # --------------------------------------------------------
+    # AirVPN port forwarding
+    # --------------------------------------------------------
 
+    # Port obtained from AirVPN
+    - FIREWALL_VPN_INPUT_PORTS=${AIRVPN_PORT}
+
+    # --------------------------------------------------------
+    # LAN access
+    # --------------------------------------------------------
+
+    # qBittorrent WebUI
+    - FIREWALL_INPUT_PORTS=8080
+
+    # --------------------------------------------------------
+    # DNS
+    # --------------------------------------------------------
+
+    - DNS_UPSTREAM_RESOLVERS=${GLUETUN_DNS_UPSTREAM_RESOLVERS:-gluetun}
+
+    # --------------------------------------------------------
+    # Server database updater
+    # --------------------------------------------------------
+
+    - UPDATER_PERIOD=24h
+    - UPDATER_VPN_SERVICE_PROVIDERS=${VPN_SERVICE_PROVIDER}
+
+  ports:
+
+    # qBittorrent WebUI
+    - "8080:8080"
+
+    # Prowlarr
+    - "9696:9696"
+
+    # Bazarr
+    - "6767:6767"
+
+    # Your other services sharing Gluetun
+    - "7474:7474"
+    - "8191:8191"
+    - "9191:9191"
+
+  networks:
+    - starr
+
+  healthcheck:
+    test: ["/gluetun-entrypoint", "healthcheck"]
+    interval: 5s
+    timeout: 5s
+    start_period: 10s
+    retries: 3
 
   # ============================================================
   # HOMARR
