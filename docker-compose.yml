@@ -189,7 +189,7 @@ services:
     restart: unless-stopped
 
   # ============================================================
-  # AUTOBRR
+  # BYPARR
   # ============================================================
 
   byparr:
@@ -200,6 +200,24 @@ services:
     volumes:
       - ${BASE_PATH}/byparr:/config
     shm_size: 512mb
+    networks:
+      - starr
+    restart: unless-stopped
+
+    sabnzbd:
+    image: lscr.io/linuxserver/sabnzbd:latest
+    container_name: sabnzbd
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - ${BASE_PATH}/sabnzbd:/config
+      - ${MOVIES_PATH}:/movies
+      - ${TV_PATH}:/tv
+      - ${BASE_PATH}/downloads:/downloads
+    ports:
+      - "8085:8080"
     networks:
       - starr
     restart: unless-stopped
