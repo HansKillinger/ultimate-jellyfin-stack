@@ -204,7 +204,11 @@ services:
       - starr
     restart: unless-stopped
 
-    sabnzbd:
+  # ============================================================
+  # SABNZBD
+  # ============================================================
+
+  sabnzbd:
     image: lscr.io/linuxserver/sabnzbd:latest
     container_name: sabnzbd
     environment:
