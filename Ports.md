@@ -19,6 +19,8 @@
 - 8989   Sonarr
 - 8920   Jellyfin HTTPS
 - 9696   Prowlarr
+- 8085   Sabnzbd
+- ????   Byparr
 
 ## Future - Not Installed
 - 8686   Lidarr (future)
