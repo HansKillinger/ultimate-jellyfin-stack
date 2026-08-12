@@ -1,6 +1,8 @@
 networks:
   starr:
   jellystat:
+  proxy:
+    external: true
 
 services:
 
@@ -31,6 +33,7 @@ services:
 
     networks:
       - starr
+      - proxy
 
 
   # ============================================================
@@ -242,6 +245,7 @@ services:
 
     networks:
       - starr
+      - proxy
 
     ports:
       - "5055:5055"
@@ -425,6 +429,7 @@ services:
 
     networks:
       - starr
+      - proxy
 
     environment:
       - APP_URL=${WIZARR_URL}
