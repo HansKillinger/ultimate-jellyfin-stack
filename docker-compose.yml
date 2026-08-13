@@ -219,7 +219,7 @@ services:
       - ${BASE_PATH}/sabnzbd:/config
       - ${MOVIES_PATH}:/movies
       - ${TV_PATH}:/tv
-      - ${CLOUD_PATH}/Downloads/sabznbd:/downloads
+      - ${CLOUD_PATH}/Downloads/sabnzbd:/downloads
     ports:
       - "8085:8080"
     networks:
