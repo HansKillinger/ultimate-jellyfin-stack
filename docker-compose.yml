@@ -52,7 +52,7 @@ services:
     volumes:
       - ${BASE_PATH}/radarr/config:/config
       - ${MOVIES_PATH}:/data/movies
-      - ${MOVIES_PATH}/downloads:/data/downloads
+      - ${CLOUD_PATH}/Downloads:/data/downloads
 
     ports:
       - "7878:7878"
@@ -79,7 +79,7 @@ services:
     volumes:
       - ${BASE_PATH}/sonarr/config:/config
       - ${TV_PATH}:/data/tv
-      - ${MOVIES_PATH}/downloads:/data/downloads
+      - ${CLOUD_PATH}/Downloads:/data/downloads
 
     ports:
       - "8989:8989"
@@ -219,7 +219,7 @@ services:
       - ${BASE_PATH}/sabnzbd:/config
       - ${MOVIES_PATH}:/movies
       - ${TV_PATH}:/tv
-      - ${BASE_PATH}/downloads:/downloads
+      - ${CLOUD_PATH}/Downloads/sabznbd:/downloads
     ports:
       - "8085:8080"
     networks:
@@ -323,7 +323,7 @@ services:
       - ${BASE_PATH}/qbittorrent/config:/config
       - ${TV_PATH}:/data/tv
       - ${MOVIES_PATH}:/data/movies
-      - ${MOVIES_PATH}/downloads:/data/downloads
+      - ${CLOUD_PATH}/Downloads/qbittorrent:/data/downloads
   
     depends_on:
       gluetun:
@@ -710,13 +710,13 @@ services:
         - base_url: "http://sonarr:8989"
           api_key: "${SONARR_KEY}"
 
-      LIDARR: >
-        - base_url: "http://lidarr:8686"
-          api_key: "${LIDARR_KEY}"
+#      LIDARR: >
+#        - base_url: "http://lidarr:8686"
+#          api_key: "${LIDARR_KEY}"
 
-      READARR: >
-        - base_url: "http://readarr:8787"
-          api_key: "${READARR_KEY}"
+#      READARR: >
+#        - base_url: "http://readarr:8787"
+#          api_key: "${READARR_KEY}"
 
       QBITTORRENT: >
         - base_url: "http://gluetun:8080"
