@@ -52,7 +52,7 @@ services:
     volumes:
       - ${BASE_PATH}/radarr/config:/config
       - ${MOVIES_PATH}:/data/movies
-      - ${CLOUD_PATH}/Downloads/complete:/data/downloads
+      - ${CLOUD_PATH}/Downloads:/data/downloads
 
     ports:
       - "7878:7878"
@@ -79,7 +79,7 @@ services:
     volumes:
       - ${BASE_PATH}/sonarr/config:/config
       - ${TV_PATH}:/data/tv
-      - ${CLOUD_PATH}/Downloads/complete:/data/downloads
+      - ${CLOUD_PATH}/Downloads:/data/downloads
 
     ports:
       - "8989:8989"
