@@ -52,7 +52,7 @@ services:
     volumes:
       - ${BASE_PATH}/radarr/config:/config
       - ${MOVIES_PATH}:/data/movies
-      - ${CLOUD_PATH}/Downloads:/data/downloads
+      - ${CLOUD_PATH}/Downloads/complete:/data/downloads
 
     ports:
       - "7878:7878"
@@ -79,7 +79,7 @@ services:
     volumes:
       - ${BASE_PATH}/sonarr/config:/config
       - ${TV_PATH}:/data/tv
-      - ${CLOUD_PATH}/Downloads:/data/downloads
+      - ${CLOUD_PATH}/Downloads/complete:/data/downloads
 
     ports:
       - "8989:8989"
@@ -219,7 +219,7 @@ services:
       - ${BASE_PATH}/sabnzbd:/config
       - ${MOVIES_PATH}:/movies
       - ${TV_PATH}:/tv
-      - ${CLOUD_PATH}/Downloads/sabnzbd:/downloads
+      - ${CLOUD_PATH}/Downloads:/data/downloads
     ports:
       - "8085:8080"
     networks:
@@ -323,7 +323,7 @@ services:
       - ${BASE_PATH}/qbittorrent/config:/config
       - ${TV_PATH}:/data/tv
       - ${MOVIES_PATH}:/data/movies
-      - ${CLOUD_PATH}/Downloads/qbittorrent:/data/downloads
+      - ${CLOUD_PATH}/Downloads:/data/downloads
   
     depends_on:
       gluetun:
